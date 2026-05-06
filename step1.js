@@ -151,15 +151,16 @@
       const navLink = document.querySelector(
         '#datatable > tbody > tr > td.text-center > div > ul > li:nth-child(1) > a'
       );
-      if (!navLink) {
-        throw new Error('❌ Navigation link not found - cek selector HTML');
-      }
+      navLink.click()
+    //   if (!navLink) {
+    //     throw new Error('❌ Navigation link not found - cek selector HTML');
+    //   }
 
-      const targetUrl = navLink.href || navLink.getAttribute('href');
-      console.log(`   🔗 URL: ${targetUrl}`);
+    //   const targetUrl = navLink.href || navLink.getAttribute('href');
+    //   console.log(`   🔗 URL: ${targetUrl}`);
 
-      // 🗂️ BUKA TAB BARU (biarkan website handle behavior default)
-      openInNewTab(targetUrl);
+    //   // 🗂️ BUKA TAB BARU (biarkan website handle behavior default)
+    //   openInNewTab(targetUrl);
       openedCount++;
       
       console.log(`   🎉 Tab #${openedCount} opened successfully`);
