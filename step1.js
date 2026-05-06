@@ -18,7 +18,7 @@
   // ⚙️ CONFIGURATION - EDIT SESUAI KEBUTUHAN
   const CONFIG = {
     // ⚠️ GANTI DENGAN URL RAW emails.txt KAMU
-    EMAILS_URL: 'https://raw.githubusercontent.com/USERNAME/REPO/main/emails.txt',
+    EMAILS_URL: 'https://raw.githubusercontent.com/esaage/auto-rekrut/main/emails.txt',
     
     // Keys untuk sessionStorage (jangan diubah kecuali konflik)
     INDEX_KEY: '__rec_batch_idx__',
