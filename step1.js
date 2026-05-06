@@ -74,7 +74,7 @@
         `❌ Gagal load emails.txt: ${err.message}\n\n` +
         `Pastikan:\n` +
         `• Repo GitHub PUBLIC\n` +
-        `• URL raw benar: https://raw.githubusercontent.com/USER/REPO/main/emails.txt\n` +
+        `• URL raw benar: https://raw.githubusercontent.com/esaage/auto-rekrut/main/emails.txt\n` +
         `• File emails.txt ada & bisa diakses`
       );
     }
