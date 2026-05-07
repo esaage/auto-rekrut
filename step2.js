@@ -9,7 +9,7 @@
  * 3. Click #loc_cd > option:nth-child(7) (pilih opsi ke-7)
  * 4. Click #btnSearch
  * 5. Click #datatable > tbody > tr > td:nth-child(11) > div > button
- * 6. Click #datatable > tbody > tr > td:nth-child(11) > div > ul > li:nth-child(2) > a
+ * 6. Click #datatable > tbody > tr > td:nth-child(11) > div > ul > li > a
  * 7. Ulangi untuk nama berikutnya
  */
 
