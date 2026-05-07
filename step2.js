@@ -126,13 +126,13 @@
 
       // ── Step 2: Klik dropdown #loc_cd ──
       console.log('   📍 Step 2: Clicking #loc_cd...');
-      click('#loc_cd');
+      await selectOption('#loc_cd', '#loc_cd > option:nth-child(7)');
       await wait(CONFIG.AFTER_SELECT);
 
-      // ── Step 3: Pilih opsi ke-7 ──
-      console.log('   📍 Step 3: Selecting option:nth-child(7)...');
-      click('#loc_cd > option:nth-child(7)');
-      await wait(CONFIG.AFTER_SELECT);
+    //   // ── Step 3: Pilih opsi ke-7 ──
+    //   console.log('   📍 Step 3: Selecting option:nth-child(7)...');
+    //   click('#loc_cd > option:nth-child(7)');
+    //   await wait(CONFIG.AFTER_SELECT);
 
       // ── Step 4: Klik tombol Search ──
       console.log('   🔍 Step 4: Clicking #btnSearch...');
