@@ -169,8 +169,8 @@
       await wait(CONFIG.AFTER_CLICK);
 
       // ── Step 6: Klik menu item ke-2 di dropdown ──
-      console.log('   🖱️  Step 6: Clicking dropdown li:nth-child(2) > a...');
-      click('#datatable > tbody > tr > td:nth-child(11) > div > ul > li:nth-child(2) > a');
+      console.log('   🖱️  Step 6: Clicking dropdown #datatable > tbody > tr > td:nth-child(11) > div > ul > li > a...');
+      click('#datatable > tbody > tr > td:nth-child(11) > div > ul > li > a');
       await wait(CONFIG.AFTER_ACTION);
 
       doneCount++;
