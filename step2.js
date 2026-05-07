@@ -61,6 +61,23 @@
     return el;
   };
 
+  /**
+   * Pilih opsi di <select> berdasarkan child selector,
+   * lalu dispatch change & input agar framework JS mendeteksi
+   * @param {string} sel    - CSS selector dari <select>
+   * @param {string} optSel - CSS selector dari <option> di dalam <select>
+   */
+  const selectOption = (sel, optSel) => {
+    const s = document.querySelector(sel);
+    if (!s) throw new Error(`❌ Select not found: ${sel}`);
+    const o = s.querySelector(optSel);
+    if (!o) throw new Error(`❌ Option not found: ${optSel}`);
+    s.value = o.value;
+    s.dispatchEvent(new Event('change', { bubbles: true }));
+    s.dispatchEvent(new Event('input',  { bubbles: true }));
+    return s;
+  };
+
   // ─────────────────────────────────────────────
   // 📥 FETCH NAMA LIST DARI GITHUB RAW
   // ─────────────────────────────────────────────
@@ -124,15 +141,10 @@
       typeValue('#full_nm', name);
       await wait(CONFIG.AFTER_INPUT);
 
-      // ── Step 2: Klik dropdown #loc_cd ──
-      console.log('   📍 Step 2: Select #loc_cd... with #loc_cd > option:nth-child(7)');
-      await selectOption('#loc_cd', '#loc_cd > option:nth-child(7)');
+      // ── Step 2 & 3: Pilih lokasi option ke-7 di #loc_cd ──
+      console.log('   📍 Step 2-3: Selecting #loc_cd option:nth-child(7)...');
+      selectOption('#loc_cd', '#loc_cd > option:nth-child(7)');
       await wait(CONFIG.AFTER_SELECT);
-
-    //   // ── Step 3: Pilih opsi ke-7 ──
-    //   console.log('   📍 Step 3: Selecting option:nth-child(7)...');
-    //   click('#loc_cd > option:nth-child(7)');
-    //   await wait(CONFIG.AFTER_SELECT);
 
       // ── Step 4: Klik tombol Search ──
       console.log('   🔍 Step 4: Clicking #btnSearch...');
