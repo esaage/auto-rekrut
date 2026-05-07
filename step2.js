@@ -125,7 +125,7 @@
       await wait(CONFIG.AFTER_INPUT);
 
       // ── Step 2: Klik dropdown #loc_cd ──
-      console.log('   📍 Step 2: Clicking #loc_cd...');
+      console.log('   📍 Step 2: Select #loc_cd... with #loc_cd > option:nth-child(7)');
       await selectOption('#loc_cd', '#loc_cd > option:nth-child(7)');
       await wait(CONFIG.AFTER_SELECT);
 
