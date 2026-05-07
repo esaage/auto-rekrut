@@ -168,9 +168,24 @@
       click('#datatable > tbody > tr > td:nth-child(11) > div > button');
       await wait(CONFIG.AFTER_CLICK);
 
-      // ── Step 6: Klik menu item ke-2 di dropdown ──
-      console.log('   🖱️  Step 6: Clicking dropdown #datatable > tbody > tr > td:nth-child(11) > div > ul > li > a...');
-      click('#datatable > tbody > tr > td:nth-child(11) > div > ul > li > a');
+      // ── Step 6: Buka link di tab baru → lanjut loop ──
+      // Tidak boleh click langsung (halaman akan pindah & loop berhenti)
+      // Solusi: ambil href, buka di tab baru, lanjut ke nama berikutnya
+      console.log('   🖱️  Step 6: Opening link in new tab...');
+      const linkEl = document.querySelector(
+        '#datatable > tbody > tr > td:nth-child(11) > div > ul > li > a'
+      );
+      if (!linkEl) throw new Error('❌ Element not found: li > a');
+
+      const href = linkEl.href || linkEl.getAttribute('href');
+      if (!href || href === '#' || href === 'javascript:void(0)') {
+        // Link tidak punya URL nyata → fallback: click biasa
+        console.log('   ⚠️  No real href, falling back to click...');
+        linkEl.click();
+      } else {
+        console.log(`   🔗 Opening: ${href}`);
+        window.open(href, '_blank', 'noopener,noreferrer');
+      }
       await wait(CONFIG.AFTER_ACTION);
 
       doneCount++;
