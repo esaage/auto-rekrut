@@ -198,10 +198,10 @@
     sessionStorage.removeItem(CONFIG.DONE_KEY);
 
     alert(
-      `🎉 Phase 2 Selesai!\n\n` +
-      `✅ ${doneCount} nama berhasil diproses\n` +
-      `⚪ ${names.length - doneCount} nama di-skip (no data)\n\n` +
-      `👉 Proses selesai!`
+      ` Phase 2 Selesai!\n\n` +
+      `${doneCount} nama berhasil diproses\n` +
+      `${names.length - doneCount} nama di-skip (no data)\n\n` +
+      ` Proses selesai!`
     );
 
   } catch (err) {
