@@ -105,7 +105,7 @@
 
         // ── Step 8: Klik select2 dropdown di q2 ──
         console.log('   🖱️  Step 8: Opening select2 dropdown in q2...');
-        click('#q2 > div > div.box-body > div > div.col-sm-4 > div:nth-child(2) > div > span > span.selection > span');
+        click('#q2 > div > div.box-body > div > div.col-sm-4 > div:nth-child(2) > div > span');
         await wait(CONFIG.AFTER_CLICK);
 
         // ── Step 9: Pilih opsi hasil proses ──
