@@ -9,7 +9,7 @@
  * 3. Click #loc_cd > option:nth-child(7) (pilih opsi ke-7)
  * 4. Click #btnSearch
  * 5. Click #datatable > tbody > tr > td:nth-child(11) > div > button
- * 6. Click #datatable > tbody > tr > td:nth-child(11) > div > ul > li > a
+ * 6. Click #datatable > tbody > tr > td:nth-child(11) > div > ul > li:nth-child(2) > a
  * 7. Ulangi untuk nama berikutnya
  */
 
@@ -168,24 +168,9 @@
       click('#datatable > tbody > tr > td:nth-child(11) > div > button');
       await wait(CONFIG.AFTER_CLICK);
 
-      // ── Step 6: Buka link di tab baru → lanjut loop ──
-      // Tidak boleh click langsung (halaman akan pindah & loop berhenti)
-      // Solusi: ambil href, buka di tab baru, lanjut ke nama berikutnya
-      console.log('   🖱️  Step 6: Opening link in new tab...');
-      const linkEl = document.querySelector(
-        '#datatable > tbody > tr > td:nth-child(11) > div > ul > li > a'
-      );
-      if (!linkEl) throw new Error('❌ Element not found: li > a');
-
-      const href = linkEl.href || linkEl.getAttribute('href');
-      if (!href || href === '#' || href === 'javascript:void(0)') {
-        // Link tidak punya URL nyata → fallback: click biasa
-        console.log('   ⚠️  No real href, falling back to click...');
-        linkEl.click();
-      } else {
-        console.log(`   🔗 Opening: ${href}`);
-        window.open(href, '_blank', 'noopener,noreferrer');
-      }
+      // ── Step 6: Klik tombol Attend ──
+      console.log('   🖱️  Step 6: Clicking Attend button...');
+      click('#datatable > tbody > tr > td:nth-child(11) > div > ul > li:nth-child(2) > a');
       await wait(CONFIG.AFTER_ACTION);
 
       doneCount++;
