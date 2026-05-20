@@ -10,7 +10,8 @@
  * 4. Click #btnSearch
  * 5. Click #datatable > tbody > tr > td:nth-child(11) > div > button
  * 6. Click #datatable > tbody > tr > td:nth-child(11) > div > ul > li:nth-child(2) > a
- * 7. Ulangi untuk nama berikutnya
+ * 7. Click #myModal > div > div > div.modal-footer > a
+ * 8. Ulangi untuk nama berikutnya
  */
 
 (async function recruitmentPhase2_ByName() {
@@ -171,6 +172,11 @@
       // ── Step 6: Klik tombol Attend ──
       console.log('   🖱️  Step 6: Clicking Attend button...');
       click('#datatable > tbody > tr > td:nth-child(11) > div > ul > li:nth-child(2) > a');
+      await wait(CONFIG.AFTER_ACTION);
+
+      // ── Step 7: Klik konfirmasi modal ──
+      console.log('   🖱️  Step 7: Clicking modal confirmation button...');
+      click('#myModal > div > div > div.modal-footer > a');
       await wait(CONFIG.AFTER_ACTION);
 
       doneCount++;
