@@ -98,7 +98,7 @@
 
     // ── Step 7: Tunggu 5 detik lalu klik hasil pertama ──
     console.log('7️⃣ Waiting 5s for search results...');
-    await wait(4000);
+    await wait(3000);
     const firstResult = document.querySelector(
       'body > span > span > span.select2-results > ul > li'
     );
