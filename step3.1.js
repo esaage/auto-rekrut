@@ -70,8 +70,9 @@
     console.log('5️⃣ Opening Select2 dropdown for jo_id...');
     //   '#modal-setbrief > div > div > div.modal-body > div:nth-child(3) > div > span > span.selection > span'
     //   '#select2-jo_id-container'
+    // '#modal-setbrief > div > div > div.modal-body > div:nth-child(3) > div > span > span.selection'
     click(
-    '#modal-setbrief > div > div > div.modal-body > div:nth-child(3) > div > span > span.selection'
+        '#modal-setbrief > div > div > div.modal-body > div.form-group.has-error.has-danger > div > span'
     );
     await wait(600);
 
