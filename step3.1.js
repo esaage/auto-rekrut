@@ -68,20 +68,28 @@
 
     // ── Step 5: Buka Select2 dropdown jo_id ──
     console.log('5️⃣ Opening Select2 dropdown for jo_id...');
-    //   '#modal-setbrief > div > div > div.modal-body > div:nth-child(3) > div > span > span.selection > span'
-    //   '#select2-jo_id-container'
-    // '#modal-setbrief > div > div > div.modal-body > div:nth-child(3) > div > span > span.selection'
-    // '#modal-setbrief > div > div > div.modal-body > div.form-group.has-error.has-danger > div > span'
-    click(
-        '#modal-setbrief > div > div > div.modal-body > div:nth-child(3) > div > span > span.selection > span > span.select2-selection__arrow'
-    );
+    const joSelect = document.querySelector('#jo_id');
+    if (!joSelect) throw new Error('❌ #jo_id select not found');
+
+    if (window.jQuery && typeof window.jQuery.fn.select2 !== 'undefined') {
+      // Gunakan jQuery Select2 API (paling reliable)
+      window.jQuery('#jo_id').select2('open');
+      console.log('   ✅ Opened via jQuery Select2 API');
+    } else {
+      // Fallback: klik .select2-selection di container sibling
+      const s2Container = joSelect.nextElementSibling; // span.select2-container
+      const selection = s2Container && s2Container.querySelector('.select2-selection');
+      if (!selection) throw new Error('❌ Select2 selection element not found');
+      selection.click();
+      console.log('   ✅ Opened via .click()');
+    }
     await wait(600);
 
     // ── Step 6: Ketik JO ID di search box ──
     console.log(`6️⃣ Typing JO ID: ${JO_ID}...`);
-    const searchInput = document.querySelector(
-      'body > span > span > span.select2-search.select2-search--dropdown > input'
-    );
+    const searchInput =
+      document.querySelector('.select2-dropdown .select2-search__field') ||
+      document.querySelector('.select2-search--dropdown input');
     if (!searchInput) throw new Error('❌ Select2 search input not found');
     searchInput.focus();
     setNativeValue(searchInput, JO_ID);
@@ -91,7 +99,11 @@
     // ── Step 7: Tunggu 5 detik lalu klik hasil pertama ──
     console.log('7️⃣ Waiting 5s for search results...');
     await wait(5000);
-    click('#select2-jo_id-results > li');
+    const firstResult =
+      document.querySelector('#select2-jo_id-results li.select2-results__option') ||
+      document.querySelector('#select2-jo_id-results > li');
+    if (!firstResult) throw new Error('❌ No results found for JO ID: ' + JO_ID);
+    firstResult.click();
     console.log('   ✅ Result selected');
     await wait(400);
 
