@@ -99,12 +99,12 @@
     // ── Step 7: Tunggu 5 detik lalu klik hasil pertama ──
     console.log('7️⃣ Waiting 5s for search results...');
     await wait(5000);
-    const firstResult =
-      document.querySelector('#select2-jo_id-results li.select2-results__option') ||
-      document.querySelector('#select2-jo_id-results > li');
+    const firstResult = document.querySelector(
+      'body > span > span > span.select2-results > ul > li'
+    );
     if (!firstResult) throw new Error('❌ No results found for JO ID: ' + JO_ID);
     firstResult.click();
-    console.log('   ✅ Result selected');
+    console.log('   ✅ Result selected: ' + firstResult.textContent.trim());
     await wait(400);
 
     // ── Step 8: Isi waktu 08.00 ──
