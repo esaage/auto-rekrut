@@ -124,8 +124,9 @@
       '#modal-setbrief > div > div > div.modal-body > div:nth-child(4) > div > input'
     );
     if (!timeInput) throw new Error('❌ Time input not found');
-    setNativeValue(timeInput, '8.00');
-    console.log('   ✅ Time set: 8.00');
+    setNativeValue(timeInput, '8:00');
+    console.log('   ✅ Time set: 8:00');
+    await wait(1000);
 
     // ── Step 9: Klik Save ──
     console.log('9️⃣ Clicking Save...');
