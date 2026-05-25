@@ -68,9 +68,10 @@
 
     // ── Step 5: Buka Select2 dropdown jo_id ──
     console.log('5️⃣ Opening Select2 dropdown for jo_id...');
-    click(
     //   '#modal-setbrief > div > div > div.modal-body > div:nth-child(3) > div > span > span.selection > span'
-      '#select2-jo_id-container'
+    //   '#select2-jo_id-container'
+    click(
+    '#modal-setbrief > div > div > div.modal-body > div:nth-child(3) > div > span > span.selection'
     );
     await wait(600);
 
