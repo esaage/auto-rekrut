@@ -31,8 +31,8 @@
     AFTER_SELECT:  400,   // setelah pilih lokasi
     AFTER_SEARCH: 1000,   // tunggu hasil datatable muncul
     AFTER_CLICK:   600,   // setelah klik action button (buka dropdown)
-    AFTER_ACTION: 1000,   // setelah klik menu item (tunggu proses server)
-    BETWEEN_LOOP: 1000,   // jeda antar nama
+    AFTER_ACTION: 700,   // setelah klik menu item (tunggu proses server)
+    BETWEEN_LOOP: 600,   // jeda antar nama
   };
 
   // ─────────────────────────────────────────────
