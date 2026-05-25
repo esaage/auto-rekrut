@@ -103,14 +103,32 @@
         notesEl.dispatchEvent(new Event('change', { bubbles: true }));
         await wait(CONFIG.AFTER_TYPE);
 
-        // ── Step 8: Klik select2 dropdown di q2 ──
-        console.log('   🖱️  Step 8: Opening select2 dropdown in q2...');
-        click('#q2 > div > div.box-body > div > div.col-sm-4 > div:nth-child(2) > div > span');
-        await wait(CONFIG.AFTER_CLICK);
+        // ── Step 8 & 9: Pilih "Passed" di select2 proc_result_cd ──
+        console.log('   🖱️  Step 8-9: Setting proc_result_cd = P (Passed)...');
+        const procSelect = document.querySelector('#proc_result_cd');
+        if (!procSelect) throw new Error('❌ #proc_result_cd not found');
 
-        // ── Step 9: Pilih opsi hasil proses ──
-        console.log('   📌 Step 9: Selecting proc_result option P...');
-        click('#select2-proc_result_cd-result-1y8c-P');
+        if (window.jQuery && typeof window.jQuery.fn.select2 !== 'undefined') {
+          // Gunakan jQuery Select2 API — paling reliable, tidak perlu buka dropdown
+          window.jQuery('#proc_result_cd').val('P').trigger('change');
+          console.log('   ✅ Set via jQuery Select2 API');
+        } else {
+          // Fallback: open dropdown lalu klik opsi "P"
+          const s2Container = procSelect.nextElementSibling;
+          const selection = s2Container && s2Container.querySelector('.select2-selection');
+          if (!selection) throw new Error('❌ Select2 selection not found');
+          selection.click();
+          await wait(CONFIG.AFTER_CLICK);
+
+          // Klik li option yang mengandung "Passed" atau value P
+          const optionP =
+            document.querySelector('li[id*="proc_result_cd"][id$="-P"]') ||
+            Array.from(document.querySelectorAll('.select2-results__option'))
+              .find(el => el.textContent.trim() === 'Passed');
+          if (!optionP) throw new Error('❌ Option "Passed" not found in dropdown');
+          optionP.click();
+          console.log('   ✅ Clicked option Passed via DOM');
+        }
         await wait(CONFIG.AFTER_SELECT);
 
         // ── Step 10: Submit form q2 ──
