@@ -96,14 +96,25 @@
     searchInput.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
     await wait(300);
 
-    // ── Step 7: Tunggu 5 detik lalu klik hasil pertama ──
-    console.log('7️⃣ Waiting 5s for search results...');
-    await wait(3000);
-    const firstResult = document.querySelector(
-      'body > span > span > span.select2-results > ul > li'
-    );
+    // ── Step 7: Tunggu hasil muncul lalu klik ──
+    console.log('7️⃣ Waiting for search results...');
+    const firstResult = await (async () => {
+      const deadline = Date.now() + 8000; // max 8 detik
+      while (Date.now() < deadline) {
+        const el =
+          document.querySelector('.select2-results__option:not(.select2-results__message)') ||
+          document.querySelector('.select2-results > ul > li');
+        if (el && el.textContent.trim() && !el.textContent.includes('Searching')) return el;
+        await wait(300);
+      }
+      return null;
+    })();
     if (!firstResult) throw new Error('❌ No results found for JO ID: ' + JO_ID);
-    firstResult.click();
+
+    // Select2 merespons mousedown+mouseup, bukan click biasa
+    firstResult.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }));
+    firstResult.dispatchEvent(new MouseEvent('mouseup',   { bubbles: true, cancelable: true }));
+    firstResult.dispatchEvent(new MouseEvent('click',     { bubbles: true, cancelable: true }));
     console.log('   ✅ Result selected: ' + firstResult.textContent.trim());
     await wait(400);
 
