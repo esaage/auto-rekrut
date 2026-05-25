@@ -77,22 +77,22 @@
     // await wait(600);
 
     // ── Step 6: Ketik JO ID di search box ──
-    console.log(`6️⃣ Typing JO ID: ${JO_ID}...`);
-    const searchInput = document.querySelector(
-      'body > span > span > span.select2-search.select2-search--dropdown > input'
-    );
-    if (!searchInput) throw new Error('❌ Select2 search input not found');
-    searchInput.focus();
-    setNativeValue(searchInput, JO_ID);
-    searchInput.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
-    await wait(300);
+    // console.log(`6️⃣ Typing JO ID: ${JO_ID}...`);
+    // const searchInput = document.querySelector(
+    //   'body > span > span > span.select2-search.select2-search--dropdown > input'
+    // );
+    // if (!searchInput) throw new Error('❌ Select2 search input not found');
+    // searchInput.focus();
+    // setNativeValue(searchInput, JO_ID);
+    // searchInput.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
+    // await wait(300);
 
-    // ── Step 7: Tunggu 5 detik lalu klik hasil pertama ──
-    console.log('7️⃣ Waiting 5s for search results...');
-    await wait(5000);
-    click('#select2-jo_id-results > li');
-    console.log('   ✅ Result selected');
-    await wait(400);
+    // // ── Step 7: Tunggu 5 detik lalu klik hasil pertama ──
+    // console.log('7️⃣ Waiting 5s for search results...');
+    // await wait(5000);
+    // click('#select2-jo_id-results > li');
+    // console.log('   ✅ Result selected');
+    // await wait(400);
 
     // ── Step 8: Isi waktu 08.00 ──
     console.log('8️⃣ Setting time to 08.00...');
