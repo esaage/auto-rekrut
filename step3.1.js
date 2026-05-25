@@ -71,10 +71,10 @@
     //   '#modal-setbrief > div > div > div.modal-body > div:nth-child(3) > div > span > span.selection > span'
     //   '#select2-jo_id-container'
     // '#modal-setbrief > div > div > div.modal-body > div:nth-child(3) > div > span > span.selection'
-    click(
-        '#modal-setbrief > div > div > div.modal-body > div.form-group.has-error.has-danger > div > span'
-    );
-    await wait(600);
+    // click(
+    //     '#modal-setbrief > div > div > div.modal-body > div.form-group.has-error.has-danger > div > span'
+    // );
+    // await wait(600);
 
     // ── Step 6: Ketik JO ID di search box ──
     console.log(`6️⃣ Typing JO ID: ${JO_ID}...`);
