@@ -127,6 +127,14 @@
     setNativeValue(timeInput, '08.00');
     console.log('   ✅ Time set: 08.00');
 
+    // ── Step 9: Klik Save ──
+    console.log('9️⃣ Clicking Save...');
+    const saveBtn = document.querySelector('#modal-setbrief > div > div > div.modal-footer > button.btn.btn-primary');
+    if (!saveBtn) throw new Error('❌ Save button not found');
+    saveBtn.click();
+    console.log('   ✅ Save clicked');
+    await wait(1000);
+
     console.log('\n✅ [PHASE 3.1] Brief setup selesai!');
 
   } catch (err) {
