@@ -92,24 +92,9 @@
     }
   };
 
-  // 🔗 OPEN LINK IN NEW TAB (Bypass popup blocker friendly)
+  // 🔗 OPEN LINK IN NEW TAB
   const openInNewTab = (url) => {
-    // Method 1: window.open (lebih clean)
-    const newTab = window.open(url, '_blank', 'noopener,noreferrer');
-    if (newTab) {
-      return true;
-    }
-    
-    // Method 2: Fallback dengan anchor element
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.target = '_blank';
-    anchor.rel = 'noopener noreferrer';
-    anchor.style.display = 'none';
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
-    return true;
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   // 🎯 MAIN EXECUTION
