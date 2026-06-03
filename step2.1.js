@@ -19,8 +19,10 @@
 
   // ⚙️ CONFIGURATION - EDIT SESUAI KEBUTUHAN
   const CONFIG = {
-    // ⚠️ GANTI DENGAN URL RAW nama.txt KAMU
-    NAMES_URL: 'https://raw.githubusercontent.com/esaage/auto-rekrut/main/nama.txt',
+    // ⚠️ GANTI DENGAN URL DOMAIN KAMU (tempat index.php di-deploy)
+    // Contoh: 'https://yourdomain.com/index.php?action=names'
+    // Atau tambahkan ?jo_id=JO-001 untuk filter per JO ID
+    NAMES_URL: 'https://adek-cantik.esaage.com/index.php?action=names',
 
     // Keys untuk sessionStorage (progress resume jika reload)
     INDEX_KEY: '__rec2_name_idx__',
@@ -29,10 +31,10 @@
     // Delay (ms)
     AFTER_INPUT:   400,   // setelah ketik nama
     AFTER_SELECT:  400,   // setelah pilih lokasi
-    AFTER_SEARCH: 1000,   // tunggu hasil datatable muncul
+    AFTER_SEARCH: 2000,   // tunggu hasil datatable muncul
     AFTER_CLICK:   600,   // setelah klik action button (buka dropdown)
-    AFTER_ACTION: 700,   // setelah klik menu item (tunggu proses server)
-    BETWEEN_LOOP: 600,   // jeda antar nama
+    AFTER_ACTION: 1000,   // setelah klik menu item (tunggu proses server)
+    BETWEEN_LOOP: 1000,   // jeda antar nama
   };
 
   // ─────────────────────────────────────────────
@@ -125,6 +127,7 @@
     // 2. Load progress dari sessionStorage (resume support)
     let currentIndex = parseInt(sessionStorage.getItem(CONFIG.INDEX_KEY) || '0', 10);
     let doneCount    = parseInt(sessionStorage.getItem(CONFIG.DONE_KEY)  || '0', 10);
+    const skippedNames = [];  // Track nama yang di-skip
 
     console.log(`📋 Total names   : ${names.length}`);
     console.log(`📍 Start index   : ${currentIndex}`);
@@ -157,6 +160,7 @@
 
       if (noDataText.includes('No data available in table')) {
         console.log(`   ⚪ No data found for "${name}" → Skipping`);
+        skippedNames.push(name);  // Catat nama yang di-skip
         currentIndex++;
         sessionStorage.setItem(CONFIG.INDEX_KEY, String(currentIndex));
         await wait(CONFIG.BETWEEN_LOOP);
@@ -168,21 +172,15 @@
       click('#datatable > tbody > tr > td:nth-child(11) > div > button');
       await wait(CONFIG.AFTER_CLICK);
 
-      // ── Step 6: Buka Detail di tab baru ──
-      console.log('   🖱️  Step 6: Opening Detail in new tab...');
-      const detailLink = document.querySelector(
-        '#datatable > tbody > tr > td:nth-child(11) > div > ul > li > a'
-      );
-      if (!detailLink) throw new Error('❌ Detail link not found');
-      const detailUrl = detailLink.href || detailLink.getAttribute('href');
-      window.open(detailUrl, '_blank', 'noopener,noreferrer');
-      console.log(`   🔗 Opened: ${detailUrl}`);
+      // ── Step 6: Klik tombol Attend ──
+      console.log('   🖱️  Step 6: Clicking Attend button...');
+      click('#datatable > tbody > tr > td:nth-child(11) > div > ul > li:nth-child(2) > a');
       await wait(CONFIG.AFTER_ACTION);
 
-      // // ── Step 7: Klik konfirmasi modal ──
-      // console.log('   🖱️  Step 7: Clicking modal confirmation button...');
-      // click('#myModal > div > div > div.modal-footer > a');
-      // await wait(CONFIG.AFTER_ACTION);
+      // ── Step 7: Klik konfirmasi modal ──
+      console.log('   🖱️  Step 7: Clicking modal confirmation button...');
+      click('#myModal > div > div > div.modal-footer > a');
+      await wait(CONFIG.AFTER_ACTION);
 
       doneCount++;
       console.log(`   🎉 Done! (${doneCount} processed)`);
@@ -208,16 +206,21 @@
     sessionStorage.removeItem(CONFIG.INDEX_KEY);
     sessionStorage.removeItem(CONFIG.DONE_KEY);
 
+    const skippedSummary = skippedNames.length > 0
+      ? `\n\nNama di-skip (${skippedNames.length}):\n` + skippedNames.map((n, i) => `${i + 1}. ${n}`).join('\n')
+      : '';
+
     alert(
       ` Phase 2 Selesai!\n\n` +
       `${doneCount} nama berhasil diproses\n` +
-      `${names.length - doneCount} nama di-skip (no data)\n\n` +
-      ` Proses selesai!`
+      `${skippedNames.length} nama di-skip (no data)` +
+      skippedSummary +
+      `\n\n Proses selesai!`
     );
 
   } catch (err) {
-    console.error('❌ [PHASE 2] Failed:', err.message);
-    console.error('🔍 Stack:', err.stack);
-    alert(`❌ Error Phase 2:\n\n${err.message}`);
+    console.error('[PHASE 2] Failed:', err.message);
+    console.error('Stack:', err.stack);
+    alert(`Error Phase 2:\n\n${err.message}`);
   }
 })();
