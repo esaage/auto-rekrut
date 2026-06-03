@@ -183,10 +183,9 @@
       console.log(`   🔗 Opened: ${detailUrl}`);
       await wait(CONFIG.AFTER_ACTION);
 
-      // ── Step 7: Klik konfirmasi modal ──
-      console.log('   🖱️  Step 7: Clicking modal confirmation button...');
-      click('#myModal > div > div > div.modal-footer > a');
-      await wait(CONFIG.AFTER_ACTION);
+      // ── Step 7: (tidak diperlukan di flow tab baru) ──
+      // Modal hanya muncul di flow "Attend" button (step2.js)
+      // window.open tidak memunculkan modal di tab saat ini
 
       doneCount++;
       console.log(`   🎉 Done! (${doneCount} processed)`);
