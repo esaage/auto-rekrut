@@ -128,6 +128,7 @@
     // 2. Load progress dari sessionStorage (resume support)
     let currentIndex = parseInt(sessionStorage.getItem(CONFIG.INDEX_KEY) || '0', 10);
     let doneCount    = parseInt(sessionStorage.getItem(CONFIG.DONE_KEY)  || '0', 10);
+    const skippedNames = [];  // Track nama yang di-skip
 
     console.log(`📋 Total names   : ${names.length}`);
     console.log(`📍 Start index   : ${currentIndex}`);
@@ -160,6 +161,7 @@
 
       if (noDataText.includes('No data available in table')) {
         console.log(`   ⚪ No data found for "${name}" → Skipping`);
+        skippedNames.push(name);  // Catat nama yang di-skip
         currentIndex++;
         sessionStorage.setItem(CONFIG.INDEX_KEY, String(currentIndex));
         await wait(CONFIG.BETWEEN_LOOP);
@@ -205,16 +207,21 @@
     sessionStorage.removeItem(CONFIG.INDEX_KEY);
     sessionStorage.removeItem(CONFIG.DONE_KEY);
 
+    const skippedSummary = skippedNames.length > 0
+      ? `\n\nNama di-skip (${skippedNames.length}):\n` + skippedNames.map((n, i) => `${i + 1}. ${n}`).join('\n')
+      : '';
+
     alert(
       ` Phase 2 Selesai!\n\n` +
       `${doneCount} nama berhasil diproses\n` +
-      `${names.length - doneCount} nama di-skip (no data)\n\n` +
-      ` Proses selesai!`
+      `${skippedNames.length} nama di-skip (no data)` +
+      skippedSummary +
+      `\n\n Proses selesai!`
     );
 
   } catch (err) {
-    console.error('❌ [PHASE 2] Failed:', err.message);
-    console.error('🔍 Stack:', err.stack);
-    alert(`❌ Error Phase 2:\n\n${err.message}`);
+    console.error('[PHASE 2] Failed:', err.message);
+    console.error('Stack:', err.stack);
+    alert(`Error Phase 2:\n\n${err.message}`);
   }
 })();

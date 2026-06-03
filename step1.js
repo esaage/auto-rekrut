@@ -113,6 +113,7 @@
     // 2. Load progress dari sessionStorage
     let currentIndex = parseInt(sessionStorage.getItem(CONFIG.INDEX_KEY) || '0', 10);
     let openedCount = parseInt(sessionStorage.getItem(CONFIG.OPENED_KEY) || '0', 10);
+    const skippedEmails = [];  // Track email yang di-skip
 
     console.log(`📋 Queue: ${emails.length} emails`);
     console.log(`📍 Start from index: ${currentIndex}`);
@@ -136,7 +137,8 @@
       const noDataText = noDataCell?.textContent?.trim();
       
       if (noDataText && noDataText.includes('No data available in table')) {
-        console.log(`   ⚪ Skip: No data found`);
+        console.log(`   ⚪ Skip: No data found for ${email}`);
+        skippedEmails.push(email);  // Catat email yang di-skip
         currentIndex++;
         sessionStorage.setItem(CONFIG.INDEX_KEY, String(currentIndex));
         continue; // Lanjut ke email berikutnya
@@ -190,11 +192,16 @@
     sessionStorage.removeItem(CONFIG.INDEX_KEY);
     sessionStorage.removeItem(CONFIG.OPENED_KEY);
 
+    const skippedSummary = skippedEmails.length > 0
+      ? `\n\nEmail di-skip (${skippedEmails.length}):\n` + skippedEmails.map((e, i) => `${i + 1}. ${e}`).join('\n')
+      : '';
+
     alert(
-      `🎉 Phase 1 Selesai!\n\n` +
-      `✅ ${openedCount} tab kandidat berhasil dibuka\n` +
-      `⚪ ${emails.length - openedCount} email di-skip (no data)\n\n` +
-      `👉 Sekarang buka tiap tab, lalu klik bookmark Phase 2 untuk proses.`
+      `Phase 1 Selesai!\n\n` +
+      `${openedCount} tab kandidat berhasil dibuka\n` +
+      `${skippedEmails.length} email di-skip (no data)` +
+      skippedSummary +
+      `\n\nSekarang buka tiap tab, lalu klik bookmark Phase 2 untuk proses.`
     );
 
   } catch (err) {
