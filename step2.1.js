@@ -172,9 +172,15 @@
       click('#datatable > tbody > tr > td:nth-child(11) > div > button');
       await wait(CONFIG.AFTER_CLICK);
 
-      // ── Step 6: Klik tombol Attend ──
-      console.log('   🖱️  Step 6: Clicking Attend button...');
-      click('#datatable > tbody > tr > td:nth-child(11) > div > ul > li:nth-child(2) > a');
+      // ── Step 6: Buka Detail di tab baru ──
+      console.log('   🖱️  Step 6: Opening Detail in new tab...');
+      const detailLink = document.querySelector(
+        '#datatable > tbody > tr > td:nth-child(11) > div > ul > li:nth-child(1) > a'
+      );
+      if (!detailLink) throw new Error('❌ Detail link not found');
+      const detailUrl = detailLink.href || detailLink.getAttribute('href');
+      window.open(detailUrl, '_blank', 'noopener,noreferrer');
+      console.log(`   🔗 Opened: ${detailUrl}`);
       await wait(CONFIG.AFTER_ACTION);
 
       // ── Step 7: Klik konfirmasi modal ──
