@@ -29,8 +29,10 @@
 
   // ⚙️ CONFIGURATION - EDIT SESUAI KEBUTUHAN
   const CONFIG = {
-    // ⚠️ GANTI DENGAN URL RAW emails.txt KAMU
-    EMAILS_URL: 'https://raw.githubusercontent.com/esaage/auto-rekrut/main/emails.txt',
+    // ⚠️ GANTI DENGAN URL DOMAIN KAMU (tempat index.php di-deploy)
+    // Contoh: 'https://yourdomain.com/index.php?action=emails'
+    // Atau tambahkan ?jo_id=JO-001 untuk filter per JO ID
+    EMAILS_URL: 'https://adek-cantik.esaage.com/index.php?action=emails',
     
     // Keys untuk sessionStorage (jangan diubah kecuali konflik)
     INDEX_KEY: '__rec_batch_idx__',

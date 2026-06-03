@@ -20,8 +20,10 @@
 
   // ⚙️ CONFIGURATION - EDIT SESUAI KEBUTUHAN
   const CONFIG = {
-    // ⚠️ GANTI DENGAN URL RAW nama.txt KAMU
-    NAMES_URL: 'https://raw.githubusercontent.com/esaage/auto-rekrut/main/nama.txt',
+    // ⚠️ GANTI DENGAN URL DOMAIN KAMU (tempat index.php di-deploy)
+    // Contoh: 'https://yourdomain.com/index.php?action=names'
+    // Atau tambahkan ?jo_id=JO-001 untuk filter per JO ID
+    NAMES_URL: 'https://adek-cantik.esaage.com/index.php?action=names',
 
     // Keys untuk sessionStorage (progress resume jika reload)
     INDEX_KEY: '__rec2_name_idx__',
