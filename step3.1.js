@@ -4,7 +4,8 @@
 
   // ⚙️ CONFIG
   // ⚠️ Ganti dengan URL domain kamu
-  const JO_IDS_URL = 'https://adek-cantik.esaage.com/index.php?action=jo_ids';
+  const JO_IDS_URL       = 'https://adek-cantik.esaage.com/index.php?action=jo_ids';
+  const BRIEFING_DATE_URL = 'https://adek-cantik.esaage.com/index.php?action=briefing_date';
 
   // Progress key untuk sessionStorage (resume jika reload)
   const INDEX_KEY = '__rec31_jo_idx__';
@@ -41,6 +42,17 @@
     el.dispatchEvent(new Event('change', { bubbles: true }));
   };
 
+  // ─── FETCH BRIEFING DATE FOR A JO_ID ─────────────────
+  const fetchBriefingDate = async (JO_ID) => {
+    const url = `${BRIEFING_DATE_URL}&jo_id=${encodeURIComponent(JO_ID)}`;
+    console.log(`📡 Fetching briefing date for ${JO_ID}:`, url);
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status} fetching briefing_date`);
+    const dateStr = (await res.text()).trim(); // format: YYYY-MM-DD from MySQL
+    if (!dateStr) throw new Error(`⚠️ Tanggal briefing kosong untuk JO ID: ${JO_ID}`);
+    return dateStr; // "YYYY-MM-DD"
+  };
+
   // ─── FETCH LIST JO_IDs DARI PHP API ──────────────────
   const fetchJoIds = async () => {
     console.log('📡 Fetching JO IDs from:', JO_IDS_URL);
@@ -57,7 +69,7 @@
   };
 
   // ─── PROSES 1 JO_ID ──────────────────────────────────
-  const processOneJoId = async (JO_ID) => {
+  const processOneJoId = async (JO_ID, briefingDateISO) => {
     console.log(`\n🏷️ Processing JO ID: ${JO_ID}`);
 
     // ── Step 1: Klik tombol Submit/Save ──
@@ -75,18 +87,15 @@
     console.log(`     ✅ Selected: ${opt6.value} - ${opt6.text}`);
     await wait(DELAYS.AFTER_LOC);
 
-    // ── Step 4: Set tanggal besok ──
-    console.log("  4️⃣ Setting tomorrow's date...");
+    // ── Step 4: Set tanggal briefing dari database ──
+    console.log(`  4️⃣ Setting briefing date to: ${briefingDateISO}...`);
     const dateInput = document.querySelector(
       '#modal-setbrief > div > div > div.modal-body > div:nth-child(2) > div > input'
     );
     if (!dateInput) throw new Error('❌ Date input not found');
 
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const dd   = String(tomorrow.getDate()).padStart(2, '0');
-    const mm   = String(tomorrow.getMonth() + 1).padStart(2, '0');
-    const yyyy = tomorrow.getFullYear();
+    // briefingDateISO is "YYYY-MM-DD" from DB
+    const [yyyy, mm, dd] = briefingDateISO.split('-');
     const dateStr = dateInput.type === 'date'
       ? `${yyyy}-${mm}-${dd}`
       : `${dd}/${mm}/${yyyy}`;
@@ -182,7 +191,8 @@
       console.log(`\n[${currentIndex + 1}/${joIds.length}] Processing JO ID: ${joId}`);
 
       try {
-        await processOneJoId(joId);
+        const briefingDate = await fetchBriefingDate(joId);
+        await processOneJoId(joId, briefingDate);
         doneCount++;
       } catch (err) {
         console.warn(`   ⚠️ Skip "${joId}": ${err.message}`);

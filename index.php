@@ -56,9 +56,13 @@ function getDB()
         `jo_id` VARCHAR(100) NOT NULL,
         `name` VARCHAR(500) NOT NULL,
         `email` VARCHAR(500) NOT NULL,
+        `briefing_date` DATE DEFAULT NULL,
         `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
         INDEX `idx_jo_id` (`jo_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+    // Add briefing_date column if it doesn't exist yet (for existing tables)
+    $conn->query("ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `briefing_date` DATE DEFAULT NULL");
 
     return $conn;
 }
@@ -119,6 +123,22 @@ if ($action === 'jo_ids') {
         $ids[] = trim($row['jo_id']);
     }
     echo implode("\n", array_filter($ids));
+    $db->close();
+    exit();
+}
+
+// API: GET briefing_date for a specific JO ID — for step3.1.js
+if ($action === 'briefing_date') {
+    header('Content-Type: text/plain; charset=utf-8');
+    $jo_id = trim($_GET['jo_id'] ?? '');
+    if ($jo_id === '') { echo ''; exit(); }
+    $db = getDB();
+    $stmt = $db->prepare("SELECT briefing_date FROM users WHERE jo_id = ? AND briefing_date IS NOT NULL LIMIT 1");
+    $stmt->bind_param('s', $jo_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $row = $result->fetch_assoc();
+    echo $row ? trim($row['briefing_date']) : '';
     $db->close();
     exit();
 }
@@ -207,18 +227,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
     $errors   = [];
 
     foreach ($sections as $i => $section) {
-        $jo_id = trim($section['jo_id'] ?? '');
-        $names  = trim($section['name']  ?? '');
-        $emails = trim($section['email'] ?? '');
+        $jo_id         = trim($section['jo_id']         ?? '');
+        $names         = trim($section['name']          ?? '');
+        $emails        = trim($section['email']         ?? '');
+        $briefing_date = trim($section['briefing_date'] ?? '');
+        // Normalise to NULL if empty
+        $briefing_date = $briefing_date !== '' ? $briefing_date : null;
 
         if ($jo_id === '' && $names === '' && $emails === '') continue;
         if ($jo_id === '') {
             $errors[] = "Section " . ($i + 1) . ": JO ID tidak boleh kosong.";
             continue;
         }
+        if ($briefing_date === null) {
+            $errors[] = "Section " . ($i + 1) . ": Tanggal Briefing wajib diisi.";
+            continue;
+        }
 
-        $stmt = $db->prepare("INSERT INTO users (jo_id, name, email) VALUES (?, ?, ?)");
-        $stmt->bind_param('sss', $jo_id, $names, $emails);
+        $stmt = $db->prepare("INSERT INTO users (jo_id, name, email, briefing_date) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param('ssss', $jo_id, $names, $emails, $briefing_date);
         if ($stmt->execute()) {
             $inserted++;
         } else {
@@ -245,7 +272,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save'])) {
 $existingData = [];
 try {
     $db = getDB();
-    $result = $db->query("SELECT jo_id, name, email FROM users ORDER BY id ASC");
+    $result = $db->query("SELECT jo_id, name, email, briefing_date FROM users ORDER BY id ASC");
     if ($result) {
         while ($row = $result->fetch_assoc()) {
             $existingData[] = $row;
@@ -891,6 +918,89 @@ try {
             font-size: 15px;
         }
 
+        /* ─── DATE INPUT ─────────────────────────── */
+        .label-required {
+            color: var(--pink-500);
+            font-size: 14px;
+            margin-left: 2px;
+        }
+
+        .date-input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .date-icon {
+            position: absolute;
+            left: 14px;
+            font-size: 18px;
+            pointer-events: none;
+            z-index: 1;
+            line-height: 1;
+        }
+
+        .input-date {
+            width: 100%;
+            padding: 13px 16px 13px 46px;
+            border: 2px solid var(--pink-200);
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, var(--pink-50) 0%, #fff5fc 100%);
+            font-family: 'Plus Jakarta Sans', inherit;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all var(--transition);
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            /* Custom calendar icon color trick */
+            color-scheme: light;
+        }
+
+        .input-date::-webkit-calendar-picker-indicator {
+            opacity: 0;
+            position: absolute;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .input-date:focus {
+            border-color: var(--pink-400);
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(255, 122, 162, 0.15),
+                        0 4px 16px rgba(244, 91, 130, 0.12);
+        }
+
+        .input-date:valid {
+            border-color: var(--pink-300);
+            background: linear-gradient(135deg, #fff0f5 0%, #fff 100%);
+        }
+
+        /* Pill showing selected date nicely */
+        .date-display-pill {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            padding: 6px 14px;
+            background: linear-gradient(135deg, var(--pink-500), var(--peach-400));
+            color: white;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 600;
+            width: fit-content;
+            animation: popIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to   { transform: scale(1);   opacity: 1; }
+        }
+
         /* ─── RESPONSIVE ────────────────────────── */
         @media (max-width: 480px) {
             .section-card {
@@ -947,17 +1057,14 @@ try {
             <div id="sections-wrapper">
                 <?php
                 // Pre-fill with existing data or show 1 empty section
-                $renderSections = !empty($existingData) ? $existingData : [['jo_id' => '', 'name' => '', 'email' => '']];
+                $renderSections = !empty($existingData) ? $existingData : [['jo_id' => '', 'name' => '', 'email' => '', 'briefing_date' => '']];
                 foreach ($renderSections as $i => $sec):
-                    $jo   = htmlspecialchars($sec['jo_id'] ?? '');
-                    $name = htmlspecialchars($sec['name']  ?? '');
-                    $mail = htmlspecialchars($sec['email'] ?? '');
+                    $jo            = htmlspecialchars($sec['jo_id']         ?? '');
+                    $name          = htmlspecialchars($sec['name']          ?? '');
+                    $mail          = htmlspecialchars($sec['email']         ?? '');
+                    $bdate         = htmlspecialchars($sec['briefing_date'] ?? '');
                 ?>
                     <div class="section-card" id="section-<?= $i ?>">
-                        <div class="section-num">Bagian <?= $i + 1 ?></div>
-                        <?php if ($i > 0): ?>
-                            <button type="button" class="btn-remove" onclick="removeSection(this)" title="Hapus bagian ini">×</button>
-                        <?php endif; ?>
 
                         <!-- JO_ID -->
                         <div class="field-group">
@@ -971,6 +1078,25 @@ try {
                                 placeholder="Masukkan JO ID (contoh: JO-2024-001)"
                                 value="<?= $jo ?>"
                                 id="jo_id_<?= $i ?>">
+                        </div>
+
+                        <!-- TANGGAL BRIEFING -->
+                        <div class="field-group">
+                            <label class="field-label" for="briefing_date_<?= $i ?>">
+                                <span class="label-icon">📅</span> Tanggal Briefing
+                                <span class="label-required">*</span>
+                            </label>
+                            <div class="date-input-wrap">
+                                <span class="date-icon">🗓️</span>
+                                <input
+                                    type="date"
+                                    class="input-date"
+                                    name="sections[<?= $i ?>][briefing_date]"
+                                    value="<?= $bdate ?>"
+                                    id="briefing_date_<?= $i ?>"
+                                    required>
+                            </div>
+                            <p class="field-hint">💡 Tanggal ini digunakan oleh step3.1.js untuk mengisi jadwal briefing</p>
                         </div>
 
                         <!-- NAME -->
@@ -1000,14 +1126,6 @@ try {
                                 rows="4"><?= $mail ?></textarea>
                             <p class="field-hint">💡 Satu email per baris, akan digunakan step1.js & step3.js</p>
                         </div>
-
-                        <!-- Plus Button -->
-                        <div class="plus-row">
-                            <button type="button" class="btn-plus" onclick="addSection(<?= $i ?>)">
-                                <span class="plus-icon">+</span>
-                                Tambah Bagian Baru
-                            </button>
-                        </div>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -1033,91 +1151,6 @@ try {
     </footer>
 
     <script>
-        let sectionCount = <?= count($renderSections) ?>;
-
-        // ── ADD SECTION ──────────────────────────────────
-        function addSection(afterIndex) {
-            const wrapper = document.getElementById('sections-wrapper');
-            const idx = sectionCount++;
-
-            const card = document.createElement('div');
-            card.className = 'section-card';
-            card.id = 'section-' + idx;
-            card.innerHTML = `
-            <div class="section-num">Bagian ${idx + 1}</div>
-            <button type="button" class="btn-remove" onclick="removeSection(this)" title="Hapus bagian ini">×</button>
-
-            <div class="field-group">
-                <label class="field-label"><span class="label-icon">🏷️</span> JO ID</label>
-                <input type="text" class="input-jo" name="sections[${idx}][jo_id]"
-                    placeholder="Masukkan JO ID (contoh: JO2605002123)" id="jo_id_${idx}">
-            </div>
-
-            <div class="field-group">
-                <label class="field-label"><span class="label-icon">👤</span> Nama</label>
-                <textarea class="textarea-field" name="sections[${idx}][name]"
-                    placeholder="Masukkan nama kandidat&#10;(satu nama per baris)"
-                    id="name_${idx}" rows="4"></textarea>
-                <p class="field-hint">💡 Satu nama per baris, akan disimpan & digunakan step2.js</p>
-            </div>
-
-            <div class="field-group" style="margin-bottom:8px;">
-                <label class="field-label"><span class="label-icon">✉️</span> Email</label>
-                <textarea class="textarea-field" name="sections[${idx}][email]"
-                    placeholder="Masukkan email kandidat&#10;(satu email per baris)&#10;contoh@email.com"
-                    id="email_${idx}" rows="4"></textarea>
-                <p class="field-hint">💡 Satu email per baris, akan digunakan step1.js & step3.js</p>
-            </div>
-
-            <div class="plus-row">
-                <button type="button" class="btn-plus" onclick="addSection(${idx})">
-                    <span class="plus-icon">+</span>
-                    Tambah Bagian Baru
-                </button>
-            </div>
-        `;
-
-            // Insert after the "afterIndex" card
-            const afterCard = document.getElementById('section-' + afterIndex);
-            if (afterCard && afterCard.nextSibling) {
-                wrapper.insertBefore(card, afterCard.nextSibling);
-            } else {
-                wrapper.appendChild(card);
-            }
-
-            // Scroll to new section
-            setTimeout(() => card.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center'
-            }), 100);
-
-            // Focus JO ID input
-            setTimeout(() => card.querySelector('.input-jo')?.focus(), 350);
-
-            updateSectionNumbers();
-        }
-
-        // ── REMOVE SECTION ───────────────────────────────
-        function removeSection(btn) {
-            const card = btn.closest('.section-card');
-            card.style.transform = 'scale(0.95)';
-            card.style.opacity = '0';
-            card.style.transition = 'all 0.25s ease';
-            setTimeout(() => {
-                card.remove();
-                updateSectionNumbers();
-            }, 250);
-        }
-
-        // ── UPDATE NUMBERS ───────────────────────────────
-        function updateSectionNumbers() {
-            const cards = document.querySelectorAll('.section-card');
-            cards.forEach((card, i) => {
-                const badge = card.querySelector('.section-num');
-                if (badge) badge.textContent = 'Bagian ' + (i + 1);
-            });
-        }
-
         // ── SHOW LOADING ─────────────────────────────────
         function showLoading() {
             const overlay = document.getElementById('loadingOverlay');
