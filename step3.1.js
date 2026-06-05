@@ -162,13 +162,13 @@
     console.log('     ✅ Time set: 8:00');
     await wait(DELAYS.AFTER_TIME);
 
-    // // ── Step 9: Klik Save ──
-    // console.log('  9️⃣ Clicking Save...');
-    // const saveBtn = document.querySelector('#modal-setbrief > div > div > div.modal-footer > button.btn.btn-primary');
-    // if (!saveBtn) throw new Error('❌ Save button not found');
-    // saveBtn.click();
-    // console.log('     ✅ Save clicked');
-    // await wait(DELAYS.AFTER_SAVE);
+    // ── Step 9: Klik Save ──
+    console.log('  9️⃣ Clicking Save...');
+    const saveBtn = document.querySelector('#modal-setbrief > div > div > div.modal-footer > button.btn.btn-primary');
+    if (!saveBtn) throw new Error('❌ Save button not found');
+    saveBtn.click();
+    console.log('     ✅ Save clicked');
+    await wait(DELAYS.AFTER_SAVE);
 
     console.log(`  🎉 JO ID ${JO_ID} selesai diproses!`);
   };
