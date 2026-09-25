@@ -4,8 +4,8 @@
 
   // ⚙️ CONFIG
   // ⚠️ Ganti dengan URL domain kamu
-  const JO_IDS_URL       = 'https://adek-cantik.esaage.com/index.php?action=jo_ids';
-  const BRIEFING_DATE_URL = 'https://adek-cantik.esaage.com/index.php?action=briefing_date';
+  const JO_IDS_URL       = 'https://adek-cantik.eterniti.id/index.php?action=jo_ids';
+  const BRIEFING_DATE_URL = 'https://adek-cantik.eterniti.id/index.php?action=briefing_date';
 
   // Progress key untuk sessionStorage (resume jika reload)
   const INDEX_KEY = '__rec31_jo_idx__';
