@@ -23,7 +23,7 @@
     // ⚠️ GANTI DENGAN URL DOMAIN KAMU (tempat index.php di-deploy)
     // Contoh: 'https://yourdomain.com/index.php?action=names'
     // Atau tambahkan ?jo_id=JO-001 untuk filter per JO ID
-    NAMES_URL: 'https://adek-cantik..eterniti.id/index.php?action=names',
+    NAMES_URL: 'https://adek-cantik.eterniti.id/index.php?action=names',
 
     // Keys untuk sessionStorage (progress resume jika reload)
     INDEX_KEY: '__rec2_name_idx__',
