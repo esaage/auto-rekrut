@@ -32,7 +32,7 @@
     // ⚠️ GANTI DENGAN URL DOMAIN KAMU (tempat index.php di-deploy)
     // Contoh: 'https://yourdomain.com/index.php?action=emails'
     // Atau tambahkan ?jo_id=JO-001 untuk filter per JO ID
-    EMAILS_URL: 'https://adek-cantik..eterniti.id/index.php?action=emails',
+    EMAILS_URL: 'https://adek-cantik.eterniti.id/index.php?action=emails',
     
     // Keys untuk sessionStorage (jangan diubah kecuali konflik)
     INDEX_KEY: '__rec_batch_idx__',
